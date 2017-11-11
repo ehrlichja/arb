@@ -1,0 +1,4 @@
+node_modules/
+*.swp
+.ipynb*
+package-lock.json

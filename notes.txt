@@ -1,0 +1,33 @@
+- bittrex api
+  - javascript
+  - supports order book and trading
+  - https://www.npmjs.com/package/node.bittrex.api
+- binance api
+  - javascript
+  - supports order book and trading
+  - https://www.npmjs.com/package/node-binance-api
+- gdax api
+  - javascript
+  - supports order book and trading
+- cryptopia api
+  - javascript
+  - https://github.com/sigwo/node-cryptopia
+  - supports order book and trading
+
+- project manager
+  - 
+
+
+- Phase 1: Get price data and calculate spreads
+  - pull from exchange 1 and 2 and join together offer books based on time or time windows
+  - subtracts ask from bid in both directions
+  - is one exchange trading at different values that the other?
+  - as time goes by, are there anomolies in prices that pop up every now and then?
+  - Questions
+    - how often does the cryptopia rest data actually refresh?
+    - how different does the data look if i run it in AWS?
+      - home latency: 172 ms to cryptopia.co.nz
+      - sydney latency: 300 ms to cryptopia.co.nz
+      - CA aws latency: 139 ms to cryptopia.co.nz
+- Phase 2: Simulates trades and calculate profits
+- Phase 3: Run in real world
