@@ -8,6 +8,7 @@
     "async": "^2.6.0",
     "event-stream": "^3.3.4",
     "gulp": "^3.9.1",
+    "lokijs": "^1.5.1",
     "node-binance-api": "^0.2.3",
     "node-bittrex-api": "^0.7.7",
     "request": "^2.83.0",
