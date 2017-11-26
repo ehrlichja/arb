@@ -3,7 +3,7 @@ const order = require('./order.js');
 
 var exports = module.exports = {};
 
-exports.openCryptopia = function(insert) {
+exports.openCryptopia = function(insert, pair) {
 
   var pollIntervalMs = 1000;
 
@@ -13,7 +13,7 @@ exports.openCryptopia = function(insert) {
       parseCryptopiaChunk(err, res, body, insert)
     };
 
-    request('https://www.cryptopia.co.nz/api/GetMarketOrders/ARK_BTC', { json: true }, parse);
+    request('https://www.cryptopia.co.nz/api/GetMarketOrders/' + pair, { json: true }, parse);
   }, pollIntervalMs);
 
 };

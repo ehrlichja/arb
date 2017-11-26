@@ -9,6 +9,7 @@
     "event-stream": "^3.3.4",
     "gulp": "^3.9.1",
     "lokijs": "^1.5.1",
+    "md5": "^2.2.1",
     "mysql": "^2.15.0",
     "node-binance-api": "^0.2.3",
     "node-bittrex-api": "^0.7.7",

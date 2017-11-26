@@ -48,3 +48,17 @@ var parseBittrexChunk = function(data, insert) {
 
   };
 };
+
+exports.buy = function(price, amount) {
+  bittrex.tradebuy({
+    MarketName: 'ARK-BTC',
+    OrderType: 'LIMIT',
+    Quantity: amount,
+    Rate: price,
+    TimeInEffect: 'IMMEDIATE_OR_CANCEL', // supported options are 'IMMEDIATE_OR_CANCEL', 'GOOD_TIL_CANCELLED', 'FILL_OR_KILL'
+    ConditionType: 'NONE', // supported options are 'NONE', 'GREATER_THAN', 'LESS_THAN'
+    Target: 0, // used in conjunction with ConditionType
+  }, function( data, err ) {
+    console.log( data );
+  });
+};

@@ -37,7 +37,6 @@ var insert = function(data) {
     return o.amount != undefined;
   }).map(function(o) {
     var v = [o.ts, o.exchange_id.toString(), o.trading_pair_id.toString(), o.order_type, o.price, o.amount];
-    console.log(v);
     return v;
   });
   connection.query(sql, [values], function(err) {
@@ -47,6 +46,6 @@ var insert = function(data) {
 
 /* Main */
 
-cryptopia.openCryptopia(insert);
-bittrex.openBittrex(insert);
+//cryptopia.openCryptopia(insert);
+//bittrex.openBittrex(insert);
 bitz.openBitz(insert);
