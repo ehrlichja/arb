@@ -50,22 +50,23 @@ exports.sell = function(price, amount) {
     api_key: "ed3b22b91f10a640965f75a02f3bb3ec",
     timestamp: Math.round((new Date()).getTime() / 1000),
     nonce: "2jnd84",
-    type: "sell",
+    type: "out",
     price: price, 
     number: amount,
     coin: "ark_btc",
-    tradepwd: "kgbd"
+    tradepwd: "oqQvJA82I8cd"
   };
 
-  var s = "api_key="+form.api_key+"&coin="+form.coin+"&nonce="+form.nonce+"&type="+form.type+"&number="+form.number+"&price="+form.price+"&timestamp="+form.timestamp+"&tradepwd="+form.tradepwd;
+  var s = "api_key="+form.api_key+"&coin="+form.coin+"&nonce="+form.nonce+"&number="+form.number+"&price="+form.price+"&timestamp="+form.timestamp+"&tradepwd="+form.tradepwd+"&type="+form.type;
+
   form.sign = md5(s) 
 
+  console.log(s);
   console.log(form);
-  request.post({url: "https://www.bit-z.com/api_v1/tradeAdd", form: form, function(err, res, body) {
-    console.log("!!");
-    console.log(err);
-    console.log(res);
-    console.log(body);
-  }});
+  console.log("querying API");
+  request.post({url: "https://www.bit-z.com/api_v1/tradeAdd", form: form}, function(err, res, body) {
+   console.log(body);
+    
+  });
 
 };
