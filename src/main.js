@@ -5,6 +5,7 @@ const config = require('config');
 
 /* Util */
 const order = require('./order.js');
+const constants = require('./constants.js');
 
 /* Exchanges */
 const bittrex = require('./bittrex.js')
@@ -34,7 +35,7 @@ connection.connect();
 
 // takes a list of Order
 var insert = function(data) {
-  var sql = "INSERT INTO orders (ts, exchange_id, trading_pair_id, order_type, price, amount) VALUES ?";
+  var sql = "INSERT INTO orders (ts, exchange_name, trading_pair, order_type, price, amount) VALUES ?";
   var values = data.filter(function(o) {
     return o.amount != undefined;
   }).map(function(o) {
@@ -49,6 +50,6 @@ var insert = function(data) {
 /* Main */
 
 //cryptopia.openCryptopia(insert, "ARK_BTC");
-//bittrex.openBittrex(insert);
+bittrex.openBittrex('BTC-VTC', insert);
 //bitz.openBitz(insert);
-coingi.openCoingi(insert);
+coingi.openCoingi('vtc-btc', insert);

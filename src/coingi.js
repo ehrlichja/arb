@@ -3,32 +3,35 @@ const crypto = require('crypto');
 const nonce = require('nonce')();
 const config = require('config');
 
+const constants = require('./constants.js');
 const order = require('./order.js');
 
 var exports = module.exports = {};
 
-exports.openCoingi = function(insert) {
+exports.openCoingi = function(pair, insert) {
 
   var pollIntervalMs = 1000;
 
   setInterval(function() {
     var parse = function(err, res, body) {
-      parseCoingi(err, res, body, insert);
+      parseCoingi(err, res, body, insert, pair);
     };
 
-    request("https://api.coingi.com/current/order-book/vtc-btc/200/200/32", {json: true}, parse)
+    request("https://api.coingi.com/current/order-book/" + pair  + "/200/200/32", {json: true}, parse)
   }, pollIntervalMs);
 
 };
 
-var parseCoingi = function(err, res, body, insert) {
+var parseCoingi = function(err, res, body, insert, pair) {
+  var exchange_name = "COINGI";
+  var pair_id = constants.pair_id(pair);
 
   var bids = body['bids'].map(function(bid) {
-    return new order.Order(new Date(), 4, 2, 'BUY', bid['price'], bid['baseAmount']);
+    return new order.Order(new Date(), exchange_name, pair_id, 'BUY', bid['price'], bid['baseAmount']);
   });
 
   var asks = body['asks'].map(function(bid) {
-    return new order.Order(new Date(), 4, 2, 'SELL', bid['price'], bid['baseAmount']);
+    return new order.Order(new Date(), exchange_name, pair_id, 'SELL', bid['price'], bid['baseAmount']);
   });
 
   insert(bids);
