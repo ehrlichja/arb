@@ -39,7 +39,7 @@ setInterval(function() {
   var profit = highestCoingiBuy - lowestBittrexSell;
   // open a coingi order for the price of 110% of lowestBittrexSell
   var coingSellOrder = lowestBittrexSell * 1.1;
-  console.log(lowestBittrexSell + " - " + coingSellOrder + " - " + highestCoingiBuy);
+  //console.log(lowestBittrexSell + " - " + coingSellOrder + " - " + highestCoingiBuy);
   if (profit > 0) {
     console.log(lowestBittrexSell + " - " + highestCoingiBuy + " - " + profit);
      

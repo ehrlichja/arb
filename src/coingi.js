@@ -44,10 +44,11 @@ var sign = function(form) {
   var api_key = coingi_config.get('apiKey');
   var api_secret = coingi_config.get('secretKey');
   var nonce = Math.floor(Math.random()*8999999999999999999+1000000000000000000);
-  var sig = nonce+'$'+api_key;
   console.log(api_secret);
   
   var hmac = crypto.createHmac('sha256', api_secret);  
+  hmac.update(nonce+'$'+api_key);
+  var sig = hmac.digest('hex');
   form.token = api_key;
   form.nonce = nonce;
   form.signature = sig;
@@ -58,7 +59,7 @@ exports.createOrder = function(type, price, volume, pair) {
   var form = {
     id: 'abc-1',
     type: type,
-    timestamp: new Date().getTime() / 1000,
+    timestamp: Math.round(new Date().getTime() / 1000, 0),
     currencyPair: pair,
     price: price,
     volume: volume
