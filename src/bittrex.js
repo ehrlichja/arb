@@ -1,14 +1,24 @@
 const bittrex = require('node-bittrex-api');
 const order = require('./order.js');
 const constants = require('./constants.js');
+const config = require('config');
+const Promise = require('bluebird');
+const tradebuy = Promise.promisify(bittrex.tradebuy);
 
 var exports = module.exports = {};
+
+var bittrexConfig = config.get("bittrex");
+
+bittrex.options({
+  'apikey' : bittrexConfig.get('apiKey'),
+  'apisecret' : bittrexConfig.get("apiSecret")
+});
 
 exports.openBittrex = function(pair, insert) {
   bittrex.websockets.client(function() {
     console.log("websocket connected");
     var parse = function(data) {
-      parseBittrexChunk(data, insert, pair)
+      parseBittrex(data, insert, pair)
     }
     bittrex.websockets.subscribe([pair], parse);
   });
@@ -20,7 +30,7 @@ Type 1 – you need to delete this entry from your orderbook. This entry no long
 Type 2 – you need to edit this entry. There are different number of orders at this price
 */
 
-var parseBittrexChunk = function(data, insert, pair) {
+var parseBittrex = function(data, insert, pair) {
   if (data.M == "updateExchangeState") {
 
     var exchange_name = "BITTREX";
@@ -52,16 +62,18 @@ var parseBittrexChunk = function(data, insert, pair) {
   };
 };
 
-exports.buy = function(price, amount) {
-  bittrex.tradebuy({
-    MarketName: 'ARK-BTC',
+exports.createBuyOrder = function(price, volume, pair) {
+  return tradebuy({
+    MarketName: pair,
     OrderType: 'LIMIT',
-    Quantity: amount,
+    Quantity: volume,
     Rate: price,
-    TimeInEffect: 'IMMEDIATE_OR_CANCEL', // supported options are 'IMMEDIATE_OR_CANCEL', 'GOOD_TIL_CANCELLED', 'FILL_OR_KILL'
+    TimeInEffect: 'GOOD_TIL_CANCELLED', // supported options are 'IMMEDIATE_OR_CANCEL', 'GOOD_TIL_CANCELLED', 'FILL_OR_KILL'
     ConditionType: 'NONE', // supported options are 'NONE', 'GREATER_THAN', 'LESS_THAN'
-    Target: 0, // used in conjunction with ConditionType
-  }, function( data, err ) {
-    console.log( data );
+    Target: 0 // used in conjunction with ConditionType
   });
 };
+
+exports.cancel = function(orderId) {
+  bittrex.cancel(orderId);
+}

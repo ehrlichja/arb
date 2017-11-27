@@ -1,10 +1,30 @@
 const request = require('request');
 
-const bitz = require('./bitz.js');
+/* Exchanges */
+const bittrex = require('./bittrex.js')
+const cryptopia = require('./cryptopia.js')
+const bitz = require('./bitz.js')
 const coingi = require('./coingi.js');
 
-coingi.createOrder(0, 0.000576, 5, 'vtc-btc');
-//coingi.cancelOrder('abc-1');
+bittrex.createBuyOrder(0.0001, 5, "BTC-VTC").then(function(result, err) {
+  console.log(err);
+  console.log(result);
+}).catch(function(err) {
+  console.log(err);
+});
+
+
+
+/*
+coingi.createOrder(1, 0.1, 4.99, 'vtc-btc').then(function(result) {
+  console.log(result.result);
+  var orderId = result.result;
+  coingi.cancelOrder(orderId);
+});
+*/
+
+
+
 
 //bitz.sell(0.0004, 2)
 /*

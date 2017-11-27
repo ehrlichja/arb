@@ -1,4 +1,4 @@
-const request = require('request');
+const request = require('request-promise');
 const crypto = require('crypto');
 const nonce = require('nonce')();
 const config = require('config');
@@ -69,16 +69,13 @@ exports.createOrder = function(type, price, volume, pair) {
  
   console.log(signedForm);
 
-  request.post({url: 'https://api.coingi.com/user/add-order', json: signedForm}, function(err, res, body) {
-   console.log(err);
-   console.log(body);
-  });
+  return request.post({url: 'https://api.coingi.com/user/add-order', json: signedForm});
 
 };
 
-exports.cancelOrder = function(id) {
+exports.cancelOrder = function(orderId) {
   var form = {
-    orderId: 'abc-1'
+    orderId: orderId
   };
  
   var signedForm = sign(form);
