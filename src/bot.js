@@ -1,33 +1,26 @@
 const bittrex = require('./bittrex.js')
-const bitz = require('./bitz.js')
+const coingi = require('./coingi.js')
 const order = require('./order.js');
 
-var highestBitzBuy = 0.0;
 var lowestBittrexSell = 0.0;
+var highestCoingiBuy = 0.0;
 
-var insertBitz = function(data) {
-
-  var bitzBuys = data.filter(function(order) {
-    return order.exchange_id == 3; // bitz
+var insertCoingi = function(data) {
+  var coingiBuys = data.filter(function(order) {
+    return order.exchange_id == "COINGI";
   }).filter(function(order) {
-    return order.order_type == 'BUY';
+    return order.order_type == "BUY";
   });
-
-
-  if (bitzBuys.length > 0) {
-    bitzBuys.sort(function(a, b) { a.price < b.price })[0];
-    // console.log("lowest buy: " + bitzBuys[0]);
-    // console.log("highest buy: " + bitzBuys[bitzBuys.length - 1]);
-    highestBitzBuy = bitzBuys[bitzBuys.length - 1].price;
-  };
-
+  if (coingiBuys.length > 0) {
+    coingiBuys.sort(function(a, b) { a.price > b.price })[0];
+    highestCoingiBuy = coingiBuys[0].price; 
+  }
 
 };
 
 var insertBittrex = function(data) {
-
   var bittrexSells = data.filter(function(order) {
-    return order.exchange_id == 1; // bittrex
+    return order.exchange_id == "BITTREX"; 
   }).filter(function(order) {
     return order.order_type == 'SELL';
   });
@@ -39,14 +32,17 @@ var insertBittrex = function(data) {
 
 };
 
-bittrex.openBittrex(insertBittrex);
-bitz.openBitz(insertBitz);
+bittrex.openBittrex('BTC-VTC', insertBittrex);
+coingi.openCoingi('vtc-btc', insertCoingi);
 
 setInterval(function() {
-  var spread = highestBitzBuy - lowestBittrexSell;
-  if (spread > 0) {
-    console.log("buy: " + highestBitzBuy.toString() + " sell: " + lowestBittrexSell.toString() + " spread: " + spread.toString());
-    console.log("TRADE!");
-  };
-}, 100);
+  var profit = highestCoingiBuy - lowestBittrexSell;
+  // open a coingi order for the price of 110% of lowestBittrexSell
+  var coingSellOrder = lowestBittrexSell * 1.1;
+  console.log(lowestBittrexSell + " - " + coingSellOrder + " - " + highestCoingiBuy);
+  if (profit > 0) {
+    console.log(lowestBittrexSell + " - " + highestCoingiBuy + " - " + profit);
+     
+  }
+}, 210);
 

@@ -10,7 +10,7 @@ var exports = module.exports = {};
 
 exports.openCoingi = function(pair, insert) {
 
-  var pollIntervalMs = 1000;
+  var pollIntervalMs = 210;
 
   setInterval(function() {
     var parse = function(err, res, body) {
@@ -39,34 +39,53 @@ var parseCoingi = function(err, res, body, insert, pair) {
 
 };
 
-exports.sell = function(amount, pair) {
-
-  var coingiConfig = config.get('coingi');
-  var api_key = coingiConfig.get('apiKey');
-  var api_secret = coingiConfig.get('secret');
-  var this_nonce = Math.floor(Math.random()*8999999999999999999+1000000000000000000);
-  var this_sig = this_nonce+'$'+api_key;
-   
+var sign = function(form) {
+  var coingi_config = config.get('coingi');
+  var api_key = coingi_config.get('apiKey');
+  var api_secret = coingi_config.get('secretKey');
+  var nonce = Math.floor(Math.random()*8999999999999999999+1000000000000000000);
+  var sig = nonce+'$'+api_key;
+  console.log(api_secret);
+  
   var hmac = crypto.createHmac('sha256', api_secret);  
-  hmac.update(this_sig);
+  form.token = api_key;
+  form.nonce = nonce;
+  form.signature = sig;
+  return form;
+};
 
+exports.createOrder = function(type, price, volume, pair) {
   var form = {
     id: 'abc-1',
-    type: 1,
+    type: type,
     timestamp: new Date().getTime() / 1000,
-    currencyPair: 'vtc-btc',
-    price: 100000,
-    volume: 1,
-    signature: hmac.digest('hex'),
-    token: api_key,
-    nonce: this_nonce
+    currencyPair: pair,
+    price: price,
+    volume: volume
   };
  
-  console.log(form);
+  var signedForm = sign(form);
+ 
+  console.log(signedForm);
 
-  request.post({url: 'https://api.coingi.com/user/add-order', json:  form}, function(err, res, body) {
+  request.post({url: 'https://api.coingi.com/user/add-order', json: signedForm}, function(err, res, body) {
    console.log(err);
    console.log(body);
   });
 
+};
+
+exports.cancelOrder = function(id) {
+  var form = {
+    orderId: 'abc-1'
+  };
+ 
+  var signedForm = sign(form);
+ 
+  console.log(signedForm);
+
+  request.post({url: 'https://api.coingi.com/user/cancel-order', json: signedForm}, function(err, res, body) {
+   console.log(err);
+   console.log(body);
+  });
 };

@@ -50,6 +50,6 @@ var insert = function(data) {
 /* Main */
 
 //cryptopia.openCryptopia(insert, "ARK_BTC");
-bittrex.openBittrex('BTC-VTC', insert);
+//bittrex.openBittrex('BTC-VTC', insert);
 //bitz.openBitz(insert);
 coingi.openCoingi('vtc-btc', insert);
