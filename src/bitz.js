@@ -1,6 +1,9 @@
 const request = require('request');
+const crypto = require('crypto');
+const nonce = require('nonce');
+const config = require('config');
+
 const order = require('./order.js');
-const md5 = require('md5');
 
 var exports = module.exports = {};
 
@@ -46,20 +49,25 @@ var parseBitz = function(err, res, body, insert) {
 
 exports.sell = function(price, amount) {
   console.log("selling " + amount.toString() + " for " + price.toString());
+  var bitzConfig = config.get('bitz');
   var form = {
-    api_key: "ed3b22b91f10a640965f75a02f3bb3ec",
+    api_key: bitzConfig.get('apiKey'),
     timestamp: Math.round((new Date()).getTime() / 1000),
-    nonce: "2jnd84",
+    nonce: "309127",
     type: "out",
     price: price, 
     number: amount,
     coin: "ark_btc",
-    tradepwd: "oqQvJA82I8cd"
+    tradepwd: bitzConfig.get('tradePassword')
   };
 
+  var secret_key = bitzConfig.get('secretKey');
+  //var s = "api_key = "+form.api_key+" & coin = "+form.coin+" & nonce = "+form.nonce+" & number = "+form.number+" & price = "+form.price+" & timestamp = "+form.timestamp+" & tradepwd = "+form.tradepwd+" & type = "+form.type;
   var s = "api_key="+form.api_key+"&coin="+form.coin+"&nonce="+form.nonce+"&number="+form.number+"&price="+form.price+"&timestamp="+form.timestamp+"&tradepwd="+form.tradepwd+"&type="+form.type;
 
-  form.sign = md5(s) 
+  const hmac = crypto.createHash('md5');
+  hmac.update(s);
+  form.sign = hmac.digest('hex');
 
   console.log(s);
   console.log(form);

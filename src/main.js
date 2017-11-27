@@ -1,6 +1,7 @@
 /* Deps */
 const fs = require('fs');
 const mysql = require('mysql');
+const config = require('config');
 
 /* Util */
 const order = require('./order.js');
@@ -9,6 +10,7 @@ const order = require('./order.js');
 const bittrex = require('./bittrex.js')
 const cryptopia = require('./cryptopia.js')
 const bitz = require('./bitz.js')
+const coingi = require('./coingi.js');
 
 console.log("application started");
 
@@ -20,12 +22,12 @@ var appendCSV = function(line) {
   });
 };
 
+var dbConfig = config.get('db')
 var connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'arb',
-  password: 'arb',
-  database: 'arb',
-  debug: true
+  host: dbConfig.get('host'),
+  user: dbConfig.get('user'),
+  password: dbConfig.get('password'),
+  database: dbConfig.get('name')
 });
 
 connection.connect();
@@ -46,6 +48,7 @@ var insert = function(data) {
 
 /* Main */
 
-//cryptopia.openCryptopia(insert);
+//cryptopia.openCryptopia(insert, "ARK_BTC");
 //bittrex.openBittrex(insert);
-bitz.openBitz(insert);
+//bitz.openBitz(insert);
+coingi.openCoingi(insert);
