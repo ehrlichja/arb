@@ -26,17 +26,20 @@ var parseCoingi = function(err, res, body, insert, pair) {
   var exchange_name = "COINGI";
   var pair_id = constants.pair_id(pair);
 
-  var bids = body['bids'].map(function(bid) {
-    return new order.Order(new Date(), exchange_name, pair_id, 'BUY', bid['price'], bid['baseAmount']);
-  });
-
-  var asks = body['asks'].map(function(bid) {
-    return new order.Order(new Date(), exchange_name, pair_id, 'SELL', bid['price'], bid['baseAmount']);
-  });
+  if (body['bids'] != undefined) {
+    var bids = body['bids'].map(function(bid) {
+      return new order.Order(new Date(), exchange_name, pair_id, 'BUY', bid['price'], bid['baseAmount']);
+    });
 
   insert(bids);
-  insert(asks);
+  }
 
+  if (body['bids'] != undefined) {
+    var asks = body['asks'].map(function(bid) {
+      return new order.Order(new Date(), exchange_name, pair_id, 'SELL', bid['price'], bid['baseAmount']);
+    });
+    insert(asks);
+  }
 };
 
 var sign = function(form) {

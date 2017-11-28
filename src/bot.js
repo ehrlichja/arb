@@ -35,14 +35,15 @@ var insertBittrex = function(data) {
 bittrex.openBittrex('BTC-VTC', insertBittrex);
 coingi.openCoingi('vtc-btc', insertCoingi);
 
+var myCoingiSellOrder = 0;
 setInterval(function() {
-  var profit = highestCoingiBuy - lowestBittrexSell;
-  // open a coingi order for the price of 110% of lowestBittrexSell
-  var coingSellOrder = lowestBittrexSell * 1.1;
-  //console.log(lowestBittrexSell + " - " + coingSellOrder + " - " + highestCoingiBuy);
-  if (profit > 0) {
-    console.log(lowestBittrexSell + " - " + highestCoingiBuy + " - " + profit);
-     
+  myCoingiSellOrder = lowestBittrexSell * 1.05;
+
+  if (highestCoingiBuy > myCoingiSellOrder) {
+    var profit = highestCoingiBuy - lowestBittrexSell;
+    console.log("Opening coingi sell order for " + myCoingiSellOrder);
+    console.log("Opening bittrex buy order for " + lowestBittrexSell);
   }
+
 }, 210);
 
