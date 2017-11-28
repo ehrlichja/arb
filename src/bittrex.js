@@ -74,6 +74,10 @@ exports.createBuyOrder = function(price, volume, pair) {
   });
 };
 
-exports.cancel = function(orderId) {
-  bittrex.cancel(orderId);
+exports.cancelOrder = function(orderId) {
+  console.log("cancelling order " + orderId);
+  bittrex.cancel({uuid: orderId}, function(data, err) {
+    console.log(data);
+    console.log(err);
+  });
 }

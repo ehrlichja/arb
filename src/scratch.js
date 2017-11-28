@@ -6,11 +6,12 @@ const cryptopia = require('./cryptopia.js')
 const bitz = require('./bitz.js')
 const coingi = require('./coingi.js');
 
-bittrex.createBuyOrder(0.0001, 5, "BTC-VTC").then(function(result, err) {
-  console.log(err);
-  console.log(result);
+bittrex.createBuyOrder(0.0001, 5, "BTC-VTC").then(function(result) {
+  console.log("!!!");
 }).catch(function(err) {
-  console.log(err);
+  var orderId = err.result.OrderId;
+  console.log("created order id " + orderId);
+  bittrex.cancelOrder(orderId);
 });
 
 
