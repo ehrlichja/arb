@@ -1,11 +1,11 @@
-import bittrexApi = require("node-bittrex-api");
+import * as bittrexApi from "node-bittrex-api";
 
 import { Order } from "../order";
-import constants = require("../constants")
+import * as constants from "../constants"
 
 export let exchangeName: string = "BITTREX";
 
-export function openBittrex(tradingPair: string, parser: (object) => [Order], handler: (Order) => void) {
+export function openBittrex(tradingPair: string, parser: (object) => Order[], handler: (Order) => void) {
     bittrexApi.websockets.client(function() {
         console.log(`Bittrex websocket connected with trading pair ${tradingPair}`);
         let f = function(data: object) {
@@ -15,9 +15,9 @@ export function openBittrex(tradingPair: string, parser: (object) => [Order], ha
     });
 }
 
-export function parser(pairId: string): (object) => [Order] {
+export function parser(pairId: string): (object) => Order[] {
     var pairId: string = constants.pairId[pairId];
-    return function(data: object): [Order] {
+    return function(data: object): Order[] {
         let sells = data["A"][0]["Sells"].filter(function(sale: object) {
             return sale["Type"] == "0";
         }).map(function(sale: object) {

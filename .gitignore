@@ -1,3 +1,4 @@
+ts/built/
 node_modules/
 ts/node_modules
 *.swp
