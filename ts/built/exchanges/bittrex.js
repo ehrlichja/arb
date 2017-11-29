@@ -17,11 +17,17 @@ exports.openBittrex = openBittrex;
 function parser(pairId) {
     var pairId = constants.pairId[pairId];
     return function (data) {
-        return data["A"][0]["Sells"].filter(function (sale) {
+        var sells = data["A"][0]["Sells"].filter(function (sale) {
             return sale["Type"] == "0";
         }).map(function (sale) {
             return new order_1.Order(new Date(), exports.exchangeName, pairId, 'SELL', sale['Rate'], sale['Quantity']);
         });
+        var buys = data["A"][0]["Buys"].filter(function (sale) {
+            return sale["Type"] == "0";
+        }).map(function (sale) {
+            return new order_1.Order(new Date(), exports.exchangeName, pairId, 'BUY', sale['Rate'], sale['Quantity']);
+        });
+        return sells.concat(buys);
     };
 }
 exports.parser = parser;

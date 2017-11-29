@@ -18,11 +18,17 @@ export function openBittrex(tradingPair: string, parser: (object) => [Order], ha
 export function parser(pairId: string): (object) => [Order] {
     var pairId: string = constants.pairId[pairId];
     return function(data: object): [Order] {
-        return data["A"][0]["Sells"].filter(function(sale: object) {
+        let sells = data["A"][0]["Sells"].filter(function(sale: object) {
             return sale["Type"] == "0";
         }).map(function(sale: object) {
             return new Order(new Date(), exchangeName, pairId, 'SELL', sale['Rate'], sale['Quantity']);
         })
+        let buys = data["A"][0]["Buys"].filter(function(sale: object) {
+            return sale["Type"] == "0";
+        }).map(function(sale: object) {
+            return new Order(new Date(), exchangeName, pairId, 'BUY', sale['Rate'], sale['Quantity']);
+        }) 
+        return sells.concat(buys);
     }
 }
 
