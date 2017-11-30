@@ -17,7 +17,7 @@ export class Bittrex extends Exchange {
     sellFee: number;
     buyFee: number;
     exchangeName: string = "BITTREX";
-    buyOrder(price: number, amount: number, tradingPair: string, cb: (object) => void) {
+    buyOrder(price: number, amount: number, tradingPair: string, cb: (data: object, err: object) => void) {
         bittrexApi.tradebuy({
             MarketName: tradingPair,
             OrderType: 'LIMIT',
@@ -65,8 +65,9 @@ function parser(tradingPair: string, exchangeName: string, data: object): Order[
     }
 }
 
-function cb(data) {
+function cb(data, err) {
+    console.log(err);
     console.log(data);
 }
 
-new Bittrex().buyOrder(0.00001, 1, "BTC-ARK", cb);
+new Bittrex().buyOrder(0.0001, 9, "BTC-BCC", cb);

@@ -5,6 +5,9 @@ export let PPCBTC = "PPCBTC";
 export let DOGEBTC = "DOGEBTC";
 export let NMCBTC = "NMCBTC";
 export let DASHBTC = "DASHBTC";
+export let BCCBTC = "BCCBTC";
+
+enum OrderType {Sell, Buy}
 
 export let pairId = {
   "BITTREX": {
@@ -15,6 +18,7 @@ export let pairId = {
     // "BTC-DOGE": exports.DOGEBTC, // not working
     // "BTC-NMC": exports.NMCBTC, // not working
     "BTC-DASH": exports.DASHBTC,
+    "BTC-BCC": exports.BCCBTC
   },
   "COINGI": {
     "vtc-btc": exports.VTCBTC,

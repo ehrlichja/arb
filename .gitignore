@@ -4,4 +4,4 @@ ts/node_modules
 *.swp
 .ipynb*
 package-lock.json
-config/default.properties
+ts/config/default.properties
