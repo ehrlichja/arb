@@ -5,23 +5,35 @@ import { Bittrex } from './exchanges/bittrex';
 import { Order } from "./order";
 import { setInterval } from 'timers';
 
-import * as lokijs from 'lokijs';
+import * as _ from 'underscore'
 
 let orders = [];
-let db = new lokijs("default");
-let a = db.addCollection("analysis");
 
 function analyzer(): void {
   let thisOrders = orders;
-  let mapped = thisOrders.map(function(order) {
-    return [`${order.tradingPair}-${order.exchange}-${order.orderType}`, 1];
-  })
-  function reducer(acc, val, i, arr) {
-    acc[val[0]] = (acc[val[0]]|0)+1;
+  function reducer(acc, order, i, arr) {
+    if (acc[order.tradingPair] == undefined) {
+      acc[order.tradingPair] = {};
+    }
+    if (acc[order.tradingPair][order.orderType] == undefined) {
+      acc[order.tradingPair][order.orderType] = {};
+    }
+    if (acc[order.tradingPair][order.orderType][order.exchange] == undefined) {
+      acc[order.tradingPair][order.orderType][order.exchange] = [];
+    }
+    acc[order.tradingPair][order.orderType][order.exchange].push(order.price);
     return acc;
   }
-  let reduced = mapped.reduce(reducer, { });
-  console.log(reduced);
+  let reduced = thisOrders.reduce(reducer, {});
+  _.mapObject(reduced, function(orderTypes, tradingPair) {
+    _.mapObject(orderTypes, function(orders, buyOrSell){
+        _.mapObject(orders, function(prices, exchange) {
+          let ps = prices.sort()
+          let p = buyOrSell == "BUY" ? ps[0] : ps[ps.length - 1];
+          console.log(`${tradingPair} - ${buyOrSell} - ${exchange} - ${p} `)
+        })
+    })
+  })
   console.log("------------------------------------------------")
 }
 
