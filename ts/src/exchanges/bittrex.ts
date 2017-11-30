@@ -5,6 +5,8 @@ import * as constants from "../constants"
 import { Exchange } from "./exchange";
 
 export class Bittrex extends Exchange {
+    sellFee: number;
+    buyFee: number;
     exchangeName: string = "BITTREX";
     buyOrder(price: number, amount: number, tradingPair: string) {
         throw new Error("Method not implemented.");
@@ -28,7 +30,7 @@ export class Bittrex extends Exchange {
 }
 
 function parser(tradingPair: string, exchangeName: string, data: object): Order[] {
-    let pairId: string = constants.pairId[tradingPair];
+    let pairId: string = constants.pairId[exchangeName][tradingPair];
     if (data['M'] != undefined && data['M'] == "updateExchangeState") {
         let sells: Order[] = data["A"][0]["Sells"].filter(function(sale: object) {
             return sale["Type"] == "0";
@@ -45,3 +47,11 @@ function parser(tradingPair: string, exchangeName: string, data: object): Order[
         return [];
     }
 }
+
+function handler(data) {
+    console.log(data);
+}
+
+Object.keys(constants.pairId.BITTREX).forEach(function(val, i, arr) {
+    new Bittrex().open(val, handler);
+});

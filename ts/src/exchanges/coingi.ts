@@ -10,6 +10,8 @@ import { Order } from "../order";
 import { setInterval } from "timers";
 
 export class Coingi extends Exchange {
+    sellFee: number;
+    buyFee: number;
     exchangeName: string = "COINGI";
     buyOrder(price: number, amount: number, tradingPair: string) {
         throw new Error("Method not implemented.");
@@ -22,6 +24,7 @@ export class Coingi extends Exchange {
     }
     open(tradingPair: string, handler: (order: Order) => void): void {
         let exchangeName = this.exchangeName; // weird...
+        console.log(`Coingi REST connected with trading pair ${tradingPair}`);
         let pollMs = 210;
         setInterval(function() {
             let f = function(err, res, body) {
@@ -33,7 +36,7 @@ export class Coingi extends Exchange {
 }
 
 function parser(err: object, res: object, body: object, tradingPair: string, exchangeName: string): Order[]  {
-    let pairId = constants.pairId[tradingPair];
+    let pairId = constants.pairId[exchangeName][tradingPair];
     let orders: Order[] = [];
     if (body['bids'] != undefined) {
         let buys = body['bids'].map(function(bid) {
@@ -46,3 +49,11 @@ function parser(err: object, res: object, body: object, tradingPair: string, exc
     }
     return orders;
 }
+/*
+function handler(data) {
+    console.log(data);
+}
+
+Object.keys(constants.pairId.COINGI).forEach(function(val, i, arr) {
+    new Coingi().open(val, handler);
+});*/

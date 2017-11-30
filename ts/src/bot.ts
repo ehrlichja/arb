@@ -1,10 +1,9 @@
 /* Exchanges */
 import { Coingi } from './exchanges/coingi';
 import { Bittrex } from './exchanges/bittrex';
-
 import { Order } from "./order";
+import { pairId } from "./constants"
 import { setInterval } from 'timers';
-
 import * as alasql from 'alasql'
 
 let orders = [];
@@ -20,13 +19,17 @@ function analyzer(): void {
     b.orderType AS b_o, 
     a.price AS a_price, 
     b.price AS b_price,
-    IF(a.orderType = "BUY", a.price - b.price, b.price - a.price) AS profit
+    a.amount AS a_amount,
+    b.amount AS b_amount,
+    ABS(a.price - b.price) AS abs_price_diff,
+    a.price * a.amount AS a_cost,
+    b.price * b.amount AS b_cost,
+    IF(a.orderType = "SELL", (a.price * MIN(a.amount, b.amount)) - (b.price * MIN(a.amount, b.amount)), (b.price * MIN(a.amount, b.amount)) - (a.price * MIN(a.amount, b.amount))) AS profit
     FROM ? a 
     JOIN ? b 
     ON a.exchange != b.exchange 
     AND a.tradingPair = b.tradingPair 
     AND a.orderType != b.orderType
-    WHERE IF(a.orderType = "BUY", a.price - b.price, b.price - a.price) > 0
     ORDER BY profit DESC
     LIMIT 3
   `
@@ -36,17 +39,20 @@ function analyzer(): void {
 
 function handler(order: Order): void {
   orders.push(order);
-  if (orders.length > 200) {
+  if (orders.length > 2000) {
     orders.shift()
   }
 }
 
-new Coingi().open("vtc-btc", handler);
-new Coingi().open("ltc-btc", handler);
-new Bittrex().open("BTC-VTC", handler);
-new Bittrex().open("BTC-LTC", handler);
+Object.keys(pairId.BITTREX).forEach(function(val, i, arr) {
+    new Bittrex().open(val, handler);
+});
+
+Object.keys(pairId.COINGI).forEach(function(val, i, arr) {
+    new Coingi().open(val, handler);
+});
 
 setInterval(
   analyzer,
-  1000
+  2000
 );
