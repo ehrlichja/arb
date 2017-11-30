@@ -1,17 +1,12 @@
 /* Exchanges */
-import bittrex = require('./exchanges/bittrex')
-import cryptopia = require('./exchanges/cryptopia')
-import bitz = require('./exchanges/bitz')
-import coingi = require('./exchanges/coingi');
+import { Coingi } from './exchanges/coingi';
+import { Bittrex } from './exchanges/bittrex';
 
-import order = require('./order')
+import { Order } from "./order";
 
-let lowestBittrexSell: number = 0.0;
-let highestCoingiBuy: number = 0.0;
-
-export function insertCoingi(data: string) {
-  console.log(data);
-  return data;
+function handler(order: Order): void {
+    console.log(order);
 }
 
-console.log(insertCoingi("asd"))
+new Coingi().open("vtc-btc", handler);
+new Bittrex().open("BTC-VTC", handler);

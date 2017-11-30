@@ -4,42 +4,45 @@ import * as nonce from "nonce";
 import * as config from "config";
 import * as request from "request";
 
+import { Exchange } from "./exchange"
 import * as constants from "../constants";
 import { Order } from "../order";
 import { setInterval } from "timers";
 
-let exchangeName: string = "COINGI"
-
-export function openCoingi(tradingPair: string, parser: (err: object, res: object, body: object, tradingPair: string) => Order[], handler: (Order) => void) {
-    let pollMs = 210;
-    setInterval(function() {
-        let f = function(err, res, body) {
-            parser(err, res, body, tradingPair).map(handler);
-        }
-        request(`https://api.coingi.com/current/order-book/${tradingPair}/200/200/32`, { json: true }, f)
-    }, pollMs)
+export class Coingi extends Exchange {
+    exchangeName: string = "COINGI";
+    buyOrder(price: number, amount: number, tradingPair: string) {
+        throw new Error("Method not implemented.");
+    }
+    sellOrder(price: number, amount: number, tradingPair: string) {
+        throw new Error("Method not implemented.");
+    }
+    cancel(orderId: string): boolean {
+        throw new Error("Method not implemented.");
+    }
+    open(tradingPair: string, handler: (order: Order) => void): void {
+        let exchangeName = this.exchangeName; // weird...
+        let pollMs = 210;
+        setInterval(function() {
+            let f = function(err, res, body) {
+                parser(err, res, body, tradingPair, exchangeName).map(handler);
+            }
+            request(`https://api.coingi.com/current/order-book/${tradingPair}/200/200/32`, { json: true }, f)
+        }, pollMs)
+    }
 }
 
-export function parser(err: object, res: object, body: object, tradingPair: string): Order[]  {
+function parser(err: object, res: object, body: object, tradingPair: string, exchangeName: string): Order[]  {
     let pairId = constants.pairId[tradingPair];
-
     let orders: Order[] = [];
     if (body['bids'] != undefined) {
         let buys = body['bids'].map(function(bid) {
-          return new Order(new Date(), exchangeName, pairId, 'BUY', bid['price'], bid['baseAmount']);
+            return new Order(new Date(), exchangeName, pairId, 'BUY', bid['price'], bid['baseAmount']);
         });
-
         let sells = body['asks'].map(function(bid) {
             return new Order(new Date(), exchangeName, pairId, 'SELL', bid['price'], bid['baseAmount']);
         });
-      orders = sells.concat(buys);
+        orders = sells.concat(buys);
     }
     return orders;
 }
-
-function handler(order: Order): void {
-    console.log(order);
-}
-
-let tradingPair = "vtc-btc";
-openCoingi(tradingPair, parser, handler)

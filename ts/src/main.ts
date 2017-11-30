@@ -12,5 +12,3 @@ import bittrex = require('./exchanges/bittrex')
 import cryptopia = require('./exchanges/cryptopia')
 import bitz = require('./exchanges/bitz')
 import coingi = require('./exchanges/coingi');
-
-console.log(coingi.z);
