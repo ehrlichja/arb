@@ -10,11 +10,10 @@ import { Order } from "../order";
 import { setInterval } from "timers";
 
 export class Coingi extends Exchange {
-    sellFee: number;
+    sellFee: number
     buyFee: number;
     exchangeName: string = "COINGI";
     buyOrder(price: number, amount: number, tradingPair: string) {
-        throw new Error("Method not implemented.");
     }
     sellOrder(price: number, amount: number, tradingPair: string) {
         throw new Error("Method not implemented.");

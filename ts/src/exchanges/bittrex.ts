@@ -1,15 +1,32 @@
 import * as bittrexApi from "node-bittrex-api";
-
+import * as config from "config";
 import { Order } from "../order";
 import * as constants from "../constants"
 import { Exchange } from "./exchange";
+import { IConfig } from "config";
+import { Promise } from "bluebird";
+
+let bittrexConfig: IConfig = config.get("bittrex");
+
+bittrexApi.options({
+  'apikey' : bittrexConfig.get('apiKey'),
+  'apisecret' : bittrexConfig.get("apiSecret")
+});
 
 export class Bittrex extends Exchange {
     sellFee: number;
     buyFee: number;
     exchangeName: string = "BITTREX";
-    buyOrder(price: number, amount: number, tradingPair: string) {
-        throw new Error("Method not implemented.");
+    buyOrder(price: number, amount: number, tradingPair: string, cb: (object) => void) {
+        bittrexApi.tradebuy({
+            MarketName: tradingPair,
+            OrderType: 'LIMIT',
+            Quantity: amount,
+            Rate: price,
+            TimeInEffect: 'GOOD_TIL_CANCELLED', // supported options are 'IMMEDIATE_OR_CANCEL', 'GOOD_TIL_CANCELLED', 'FILL_OR_KILL'
+            ConditionType: 'NONE', // supported options are 'NONE', 'GREATER_THAN', 'LESS_THAN'
+            Target: 0 // used in conjunction with ConditionType
+        }, cb);
     }
     sellOrder(price: number, amount: number, tradingPair: string) {
         throw new Error("Method not implemented.");
@@ -48,10 +65,8 @@ function parser(tradingPair: string, exchangeName: string, data: object): Order[
     }
 }
 
-function handler(data) {
+function cb(data) {
     console.log(data);
 }
 
-Object.keys(constants.pairId.BITTREX).forEach(function(val, i, arr) {
-    new Bittrex().open(val, handler);
-});
+new Bittrex().buyOrder(0.00001, 1, "BTC-ARK", cb);

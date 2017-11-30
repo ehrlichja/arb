@@ -9,10 +9,6 @@ var exports = module.exports = {};
 
 var bittrexConfig = config.get("bittrex");
 
-bittrex.options({
-  'apikey' : bittrexConfig.get('apiKey'),
-  'apisecret' : bittrexConfig.get("apiSecret")
-});
 
 exports.openBittrex = function(pair, insert) {
   bittrex.websockets.client(function() {
