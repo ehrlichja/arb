@@ -6,6 +6,7 @@ import { Order } from "./order";
 import { setInterval } from 'timers';
 
 import * as _ from 'underscore'
+import * as alasql from 'alasql'
 
 let orders = [];
 
@@ -30,11 +31,27 @@ function analyzer(): void {
         _.mapObject(orders, function(prices, exchange) {
           let ps = prices.sort()
           let p = buyOrSell == "BUY" ? ps[0] : ps[ps.length - 1];
-          console.log(`${tradingPair} - ${buyOrSell} - ${exchange} - ${p} `)
+          // console.log(`${tradingPair} - ${buyOrSell} - ${exchange} - ${p} `)
         })
     })
   })
-  console.log("------------------------------------------------")
+  let query = `
+    SELECT 
+    a.tradingPair, 
+    a.exchange AS a_ex, 
+    b.exchange AS b_ex, 
+    a.orderType AS a_o, 
+    b.orderType AS b_o, 
+    a.price AS a_price, 
+    b.price AS b_price,
+    a.price - b.price AS profit
+    FROM ? a 
+    JOIN ? b ON a.exchange != b.exchange 
+    AND a.tradingPair = b.tradingPair 
+    AND a.orderType != b.orderType
+  `
+  console.log(alasql(query, [thisOrders, thisOrders]));
+  console.log("------------------------------------------------");
 }
 
 function handler(order: Order): void {
