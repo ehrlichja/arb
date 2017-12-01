@@ -6,6 +6,6 @@ export abstract class Exchange {
     abstract buyFee: number
     abstract open(tradingPair: string, handler: (order: Order) => void): void
     abstract buyOrder(price: number, amount: number, tradingPair: string, cb: (data, err) => void)
-    abstract sellOrder(price: number, amount: number, tradingPair: string)
-    abstract cancel(orderId: string): boolean
+    abstract sellOrder(price: number, amount: number, tradingPair: string, cb: (data, err) => void)
+    abstract cancel(orderId: string, cb: (data, err) => any): void
 }

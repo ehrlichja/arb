@@ -13,13 +13,18 @@ export class Coingi extends Exchange {
     sellFee: number
     buyFee: number;
     exchangeName: string = "COINGI";
-    buyOrder(price: number, amount: number, tradingPair: string) {
+    buyOrder(price: number, amount: number, tradingPair: string, cb: (err, res, body) => void) {
+        order(0, price, amount, tradingPair, cb);
     }
-    sellOrder(price: number, amount: number, tradingPair: string) {
-        throw new Error("Method not implemented.");
+    sellOrder(price: number, amount: number, tradingPair: string, cb: (err, res, body) => void) {
+        order(1, price, amount, tradingPair, cb);
     }
-    cancel(orderId: string): boolean {
-        throw new Error("Method not implemented.");
+    cancel(orderId: string, cb: (err, res, body) => any) {
+        let form = {
+            orderId: orderId
+        }
+        let signedForm = sign(form);
+        request.post({url: 'https://api.coingi.com/user/cancel-order', json: signedForm}, cb);
     }
     open(tradingPair: string, handler: (order: Order) => void): void {
         let exchangeName = this.exchangeName; // weird...
@@ -32,6 +37,34 @@ export class Coingi extends Exchange {
             request(`https://api.coingi.com/current/order-book/${tradingPair}/200/200/32`, { json: true }, f)
         }, pollMs)
     }
+}
+
+function order(type: number, price: number, amount: number, tradingPair: string, cb: (res: object, data: object, err: object) => void) {
+    let form = {
+        id: "test-123",
+        type: type, // 0 = bid, 1 = ask
+        timestamp: Math.round(new Date().getTime() / 1000),
+        currencyPair: tradingPair,
+        price: price,
+        volume: amount
+    };
+    let signedForm = sign(form)
+    request.post({url: `https://api.coingi.com/user/add-order`, json:signedForm}, cb)
+}
+
+function sign(form: object) {
+    let coingiConfig = config.get("coingi");
+    let apiKey = coingiConfig.get("apiKey");
+    let apiSecret = coingiConfig.get("secretKey");
+    let nonce = Math.floor(Math.random()*8999999999999999999+1000000000000000000);
+    let hmac = crypto.createHmac('sha256', apiSecret);
+    hmac.update(nonce + "$" + apiKey);
+    let sig = hmac.digest("hex")
+    form['token'] = apiKey;
+    form['nonce'] = nonce;
+    form['signature'] = sig;
+    return form;
+
 }
 
 function parser(err: object, res: object, body: object, tradingPair: string, exchangeName: string): Order[]  {

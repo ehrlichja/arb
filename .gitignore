@@ -5,3 +5,4 @@ ts/node_modules
 .ipynb*
 package-lock.json
 ts/config/default.properties
+*.DS_Store

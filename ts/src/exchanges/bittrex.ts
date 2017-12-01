@@ -64,10 +64,3 @@ function parser(tradingPair: string, exchangeName: string, data: object): Order[
         return [];
     }
 }
-
-function cb(data, err) {
-    console.log(err);
-    console.log(data);
-}
-
-new Bittrex().buyOrder(0.0001, 9, "BTC-BCC", cb);

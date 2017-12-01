@@ -24,7 +24,7 @@ function analyzer(): void {
     ABS(a.price - b.price) AS abs_price_diff,
     a.price * a.amount AS a_cost,
     b.price * b.amount AS b_cost,
-    IF(a.orderType = "SELL", (a.price * MIN(a.amount, b.amount)) - (b.price * MIN(a.amount, b.amount)), (b.price * MIN(a.amount, b.amount)) - (a.price * MIN(a.amount, b.amount))) AS profit
+    IF(a.orderType = "SELL", (b.price * MIN(a.amount, b.amount)) - (a.price * MIN(a.amount, b.amount)), (a.price * MIN(a.amount, b.amount)) - (b.price * MIN(a.amount, b.amount))) AS profit
     FROM ? a 
     JOIN ? b 
     ON a.exchange != b.exchange 
@@ -33,8 +33,21 @@ function analyzer(): void {
     ORDER BY profit DESC
     LIMIT 3
   `
-  console.log(alasql(query, [thisOrders, thisOrders]));
-  console.log("------------------------------------------------");
+  let results = alasql(query, [thisOrders, thisOrders]);
+  if (results.length > 0) {
+    let opp = results[0];
+    // console.log(opp);
+    // console.log("------------------------------------------------");
+    let buyExchange = (opp.a_o == 'SELL') ? opp.a_ex : opp.b_ex;
+    let sellExchance = (opp.b_o == 'BUY') ? opp.b_ex : opp.a_ex;
+    let buyPrice = (opp.a_o == 'SELL') ? opp.a_price : opp.b_price;
+    let sellPrice = (opp.b_o == 'BUY') ? opp.b_price : opp.a_price;
+    let amount = Math.min(opp.a_amount, opp.b_amount);
+    console.log(`buy ${amount} ${opp.tradingPair} from ${buyExchange} for ${buyPrice} and sell on ${sellExchance} for ${sellPrice}`)
+    // place order 1
+    // place order 2
+    // if 1 isn't filled, cancel 2
+  }
 }
 
 function handler(order: Order): void {

@@ -1,3 +1,5 @@
+import { Big } from 'big.js'
+
 export class Order {
     ts: Date;
     exchange: string;
