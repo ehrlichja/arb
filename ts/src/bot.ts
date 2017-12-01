@@ -5,11 +5,11 @@ import { Order } from "./order";
 import { pairId } from "./constants"
 import { setInterval } from 'timers';
 import * as alasql from 'alasql'
+import { runInThisContext } from 'vm';
 
 let orders = [];
 
 function analyzer(): void {
-  let thisOrders = orders;
   let query = `
     SELECT 
     a.tradingPair, 
@@ -33,10 +33,10 @@ function analyzer(): void {
     ORDER BY profit DESC
     LIMIT 3
   `
-  let results = alasql(query, [thisOrders, thisOrders]);
+  let results = alasql(query, [orders, orders]);
   if (results.length > 0) {
     let opp = results[0];
-    // console.log(opp);
+    console.log(opp);
     // console.log("------------------------------------------------");
     let buyExchange = (opp.a_o == 'SELL') ? opp.a_ex : opp.b_ex;
     let sellExchance = (opp.b_o == 'BUY') ? opp.b_ex : opp.a_ex;
@@ -48,6 +48,11 @@ function analyzer(): void {
     // place order 2
     // if 1 isn't filled, cancel 2
   }
+}
+
+function tester(): void {
+  let query = "SELECT price FROM ? WHERE tradingPair = 'PPCBTC' AND orderType = 'BUY' AND price > 0.0004";
+  console.log(alasql(query, [orders]));
 }
 
 function handler(order: Order): void {

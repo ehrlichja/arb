@@ -17,4 +17,11 @@ function cancel(err, res, body) {
 
 // new Bittrex().buyOrder(0.0001, 9, "BTC-BCC", cb);
 
-new Coingi().sellOrder(10000, 1, "btc-vtc", cancel)
+// new Coingi().sellOrder(10000, 1, "btc-vtc", cancel)
+
+function logHandler(order) {
+    console.log(`${order.orderType}: ${order.price}`)
+}
+
+// new Bittrex().open("BTC-PPC", logHandler);
+new Coingi().open("ppc-btc", logHandler);
