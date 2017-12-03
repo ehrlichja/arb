@@ -28,8 +28,7 @@ export class Coingi extends Exchange {
     }
     open(tradingPair: string, handler: (order: Order) => void): void {
         let exchangeName = this.exchangeName; // weird...
-        console.log(`Coingi REST connected with trading pair ${tradingPair}`);
-        let pollMs = 210;
+        let pollMs = 500;
         setInterval(function() {
             let f = function(err, res, body) {
                 parser(err, res, body, tradingPair, exchangeName).map(handler);
@@ -64,7 +63,6 @@ function sign(form: object) {
     form['nonce'] = nonce;
     form['signature'] = sig;
     return form;
-
 }
 
 function parser(err: object, res: object, body: object, tradingPair: string, exchangeName: string): Order[]  {
