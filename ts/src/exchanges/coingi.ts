@@ -68,7 +68,7 @@ function sign(form: object) {
 function parser(err: object, res: object, body: object, tradingPair: string, exchangeName: string): Order[]  {
     let pairId = constants.pairId[exchangeName][tradingPair];
     let orders: Order[] = [];
-    if (body['bids'] != undefined) {
+    if (body != undefined && body['bids'] != undefined) {
         let buys = body['bids'].map(function(bid) {
             return new Order(new Date(), exchangeName, pairId, 'BUY', bid['price'], bid['baseAmount']);
         });

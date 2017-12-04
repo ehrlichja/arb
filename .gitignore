@@ -7,5 +7,3 @@ package-lock.json
 ts/config/default.properties
 *.DS_Store
 data/logs/
-flume-conf/
-logstash/

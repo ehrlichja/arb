@@ -37,7 +37,6 @@ export class Bittrex extends Exchange {
     open(tradingPair: string, handler: (order: Order) => void): void {
         let exchangeName = this.exchangeName; // weird...
         bittrexApi.websockets.client(function() {
-            console.log(`Bittrex websocket connected with trading pair ${tradingPair}`);
             let f = function(data: object) {
                 parser(tradingPair, exchangeName, data).map(handler)
             }
