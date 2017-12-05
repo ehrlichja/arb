@@ -1,9 +1,8 @@
-ts/built/
+built/
 node_modules/
-ts/node_modules
+node_modules
 *.swp
 .ipynb*
 package-lock.json
-ts/config/default.properties
-*.DS_Store
-data/logs/
+config/default.properties
+.DS_Store
