@@ -4,7 +4,6 @@ import { Order } from "../order";
 import * as constants from "../constants"
 import { Exchange } from "./exchange";
 import { IConfig } from "config";
-import { Promise } from "bluebird";
 
 let bittrexConfig: IConfig = config.get("bittrex");
 

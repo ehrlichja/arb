@@ -7,6 +7,12 @@ export let NMCBTC = "NMCBTC";
 export let DASHBTC = "DASHBTC";
 export let BCCBTC = "BCCBTC";
 
+export let BTCUSD = "BTCUSD";
+export let BTCEUR = "BTCEUR";
+export let LTCUSD = "LTCUSD";
+export let PPCUSD = "PPCUSD";
+export let MCOBTC = "MCOBTC";
+
 enum OrderType {Sell, Buy}
 
 export let pairId = {
@@ -18,7 +24,8 @@ export let pairId = {
     // "BTC-DOGE": exports.DOGEBTC, // not working
     // "BTC-NMC": exports.NMCBTC, // not working
     "BTC-DASH": exports.DASHBTC,
-    "BTC-BCC": exports.BCCBTC
+    "BTC-BCC": exports.BCCBTC,
+    "BTC-MCO": exports.MCOBTC
   },
   "COINGI": {
     "vtc-btc": exports.VTCBTC,
@@ -26,6 +33,12 @@ export let pairId = {
     "ppc-btc": exports.PPCBTC,
     // "doge-btc": exports.DOGEBTC,
     // "nmc-ntc": exports.NMCBTC,
-    "dash-btc": exports.DASHBTC
+    "dash-btc": exports.DASHBTC,
+    
+    "btc-usd": exports.BTCUSD,
+    "btc-eur": exports.BTCEUR,
+    "ltc-usd": exports.LTCUSD,
+    "ppc-usd": exports.PPCUSD
+    
   }
 }

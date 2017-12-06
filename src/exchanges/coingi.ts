@@ -1,4 +1,3 @@
-import * as promise from "request-promise";
 import * as crypto from "crypto";
 import * as nonce from "nonce";
 import * as config from "config";
@@ -8,6 +7,9 @@ import { Exchange } from "./exchange"
 import * as constants from "../constants";
 import { Order } from "../order";
 import { setInterval } from "timers";
+import { pairId } from "../constants";
+
+let pollMs = 500;
 
 export class Coingi extends Exchange {
     sellFee: number
@@ -28,7 +30,6 @@ export class Coingi extends Exchange {
     }
     open(tradingPair: string, handler: (order: Order) => void): void {
         let exchangeName = this.exchangeName; // weird...
-        let pollMs = 500;
         setInterval(function() {
             let f = function(err, res, body) {
                 parser(err, res, body, tradingPair, exchangeName).map(handler);
@@ -52,9 +53,9 @@ function order(type: number, price: number, amount: number, tradingPair: string,
 }
 
 function sign(form: object) {
-    let coingiConfig = config.get("coingi");
-    let apiKey = coingiConfig.get("apiKey");
-    let apiSecret = coingiConfig.get("secretKey");
+    let coingiConfig: string = config.get("coingi");
+    let apiKey: string = config.get("apiKey");
+    let apiSecret: string = config.get("secretKey");
     let nonce = Math.floor(Math.random()*8999999999999999999+1000000000000000000);
     let hmac = crypto.createHmac('sha256', apiSecret);
     hmac.update(nonce + "$" + apiKey);
@@ -79,11 +80,3 @@ function parser(err: object, res: object, body: object, tradingPair: string, exc
     }
     return orders;
 }
-/*
-function handler(data) {
-    console.log(data);
-}
-
-Object.keys(constants.pairId.COINGI).forEach(function(val, i, arr) {
-    new Coingi().open(val, handler);
-});*/
