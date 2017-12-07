@@ -6,7 +6,7 @@ import { pairId } from "./constants"
 import * as request from "request";
 
 function logOrder(order: Order) {
-    let csv = [order.ts.getTime(), order.exchange, order.tradingPair, order.price, order.amount].join(",");
+    let csv = [order.ts.getTime(), order.exchange, order.tradingPair, order.orderType, order.price, order.amount].join(",");
     console.log(csv);
 }
 
