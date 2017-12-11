@@ -7,3 +7,4 @@ package-lock.json
 config/default.properties
 .DS_Store
 *.gz
+data/

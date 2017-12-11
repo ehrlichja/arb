@@ -21,9 +21,9 @@ function postOrder(order: Order) {
     })
 }
 
-Object.keys(pairId.COINGI).forEach(function(val, i, arr) {
-    new Coingi().open(val, logOrder);
-});
+// Object.keys(pairId.COINGI).forEach(function(val, i, arr) {
+//     new Coingi().open(val, logOrder);
+// });
 
 Object.keys(pairId.BITTREX).forEach(function(val, i, arr) {
     new Bittrex().open(val, logOrder);
